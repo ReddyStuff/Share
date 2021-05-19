@@ -1,12 +1,12 @@
 jobs:
 - job: getcred
   displayName: 'Get Credentials for cohost EU only'
-  #pool:
-   # name: 'Self-Hosted Agent Europe'
+  pool:
+   name: 'Self-Hosted Agent Europe'
   steps:
   - task: Powershell@2
     inputs:
-      filePath: '$(Build.SourcesDirectory)/ps.ps1'
+      filePath: '$(Build.SourcesDirectory)/Pass Variables Across Jobs Azure DevOps Pipelines/ps.ps1'
     name: getcredentials
     displayName: 'Get Credentials'
     env:
@@ -16,7 +16,7 @@ jobs:
   displayName: 'Refresh eval license'
   dependsOn: 'getcred'
   pool:
-    name: 'Self-Hosted Agent Europe'
+    vmname: 'ubuntu-latest'#'Self-Hosted Agent Europe'
   variables:
    esxilabpass : $[dependencies.getcred.outputs['getcredentials.esxilabpass']]
   steps:
