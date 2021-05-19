@@ -1,0 +1,38 @@
+jobs:
+- job: getcred
+  displayName: 'Get Credentials for cohost EU only'
+  #pool:
+   # name: 'Self-Hosted Agent Europe'
+  steps:
+  - task: Powershell@2
+    inputs:
+      filePath: '$(Build.SourcesDirectory)/ps.ps1'
+    name: getcredentials
+    displayName: 'Get Credentials'
+    env:
+     sspass: $(sspass)
+     
+- job: refresheval
+  displayName: 'Refresh eval license'
+  dependsOn: 'getcred'
+  pool:
+    name: 'Self-Hosted Agent Europe'
+  variables:
+   esxilabpass : $[dependencies.getcred.outputs['getcredentials.esxilabpass']]
+  steps:
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Write your commands here
+            echo 'print $(esxilabpass)'
+    enabled: false
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Write your PowerShell commands here.
+          Write-Host "Hello World"
+          Write-Host $(esxilabpass)
+
